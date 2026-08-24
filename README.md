@@ -328,6 +328,7 @@ Double-click `Customer Behavior Dashboard.pbix` in Power BI Desktop to interact 
 ---
 
 ## 👨‍💻 Author & Contributions
-Developed by **Vivek** as part of the **Customer Shopping Behavior & Retail Analytics Initiative**.
+Developed by **Vivek Punde** as part of the **Customer Shopping Behavior & Retail Analytics Initiative**.
+
 Contributions, pull requests, and feedback are welcome!
 #
