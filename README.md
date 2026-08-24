@@ -331,4 +331,5 @@ Double-click `Customer Behavior Dashboard.pbix` in Power BI Desktop to interact 
 Developed by **Vivek** as part of the **Customer Shopping Behavior & Retail Analytics Initiative**.
 Contributions, pull requests, and feedback are welcome!
 #   C u s t o m e r - S h o p p i n g - B e h a v i o r - A n a l y s i s  
+ #   C u s t o m e r - S h o p p i n g - B e h a v i o r - A n a l y s i s  
  
