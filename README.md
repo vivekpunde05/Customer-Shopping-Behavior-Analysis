@@ -88,6 +88,156 @@ The initial data exploration and preprocessing were executed in [`customer_shopp
 
 ---
 
+## 🗄️ SQL Business Analysis & Query Highlights
+
+All core business questions were executed via structured SQL queries in [`customer_behavior_sql_queries.sql`](customer_behavior_sql_queries.sql):
+
+### 1. Revenue by Gender
+* **Query:** Calculates total revenue per gender.
+```sql
+SELECT gender, SUM(purchase_amount) AS revenue
+FROM customer
+GROUP BY gender;
+```
+* **Result:** Male customers generated **$157,890**; Female customers generated **$75,191**.
+
+---
+
+### 2. High-Spending Discount Users
+* **Query:** Identifies customers who received discounts but still spent equal to or above the overall average purchase amount ($59.76).
+```sql
+SELECT customer_id, purchase_amount 
+FROM customer 
+WHERE discount_applied = 'Yes' 
+  AND purchase_amount >= (SELECT AVG(purchase_amount) FROM customer);
+```
+* **Result:** **839 customers** utilized discounts while maintaining high-value basket sizes.
+
+---
+
+### 3. Top 5 Products by Average Rating
+* **Query:** Determines top-rated items to understand customer satisfaction drivers.
+```sql
+SELECT item_purchased, ROUND(AVG(review_rating::numeric), 2) AS "Average Product Rating"
+FROM customer
+GROUP BY item_purchased
+ORDER BY AVG(review_rating) DESC
+LIMIT 5;
+```
+* **Result:** Gloves (3.86), Sandals (3.84), Boots (3.82), Hat (3.80), and Skirt (3.78).
+
+---
+
+### 4. Shipping Method Comparison (Standard vs. Express)
+* **Query:** Evaluates basket size differences across shipping options.
+```sql
+SELECT shipping_type, ROUND(AVG(purchase_amount), 2) AS avg_spend
+FROM customer
+WHERE shipping_type IN ('Standard', 'Express')
+GROUP BY shipping_type;
+```
+* **Result:** Express shipping averages **$60.48** vs. Standard shipping at **$58.46**.
+
+---
+
+### 5. Subscribers vs. Non-Subscribers Revenue & Spend
+* **Query:** Evaluates customer volume, average order value, and total revenue across subscription tiers.
+```sql
+SELECT subscription_status,
+       COUNT(customer_id) AS total_customers,
+       ROUND(AVG(purchase_amount), 2) AS avg_spend,
+       ROUND(SUM(purchase_amount), 2) AS total_revenue
+FROM customer
+GROUP BY subscription_status
+ORDER BY total_revenue DESC, avg_spend DESC;
+```
+* **Result:** Non-Subscribers generate **$170,436** (2,847 customers); Subscribers generate **$62,645** (1,053 customers).
+
+---
+
+### 6. Products with Highest Discount Dependency
+* **Query:** Ranks products by the proportion of orders placed with discounts applied.
+```sql
+SELECT item_purchased,
+       ROUND(100.0 * SUM(CASE WHEN discount_applied = 'Yes' THEN 1 ELSE 0 END) / COUNT(*), 2) AS discount_rate
+FROM customer
+GROUP BY item_purchased
+ORDER BY discount_rate DESC
+LIMIT 5;
+```
+* **Result:** Hat (50.0%), Sneakers (49.66%), Coat (49.07%), Sweater (48.17%), and Pants (47.37%).
+
+---
+
+### 7. Customer Loyalty Segmentation
+* **Query:** Classifies customers into New (1 purchase), Returning (2–10 purchases), and Loyal (>10 purchases).
+```sql
+WITH customer_type AS (
+    SELECT customer_id, previous_purchases,
+    CASE 
+        WHEN previous_purchases = 1 THEN 'New'
+        WHEN previous_purchases BETWEEN 2 AND 10 THEN 'Returning'
+        ELSE 'Loyal'
+    END AS customer_segment
+    FROM customer
+)
+SELECT customer_segment, COUNT(*) AS "Number of Customers" 
+FROM customer_type 
+GROUP BY customer_segment;
+```
+* **Result:** Loyal (**3,116 customers** / 79.9%), Returning (**701 customers** / 18.0%), New (**83 customers** / 2.1%).
+
+---
+
+### 8. Top 3 Best-Selling Products per Category
+* **Query:** Employs window functions (`ROW_NUMBER() OVER PARTITION BY`) to find the top 3 items in each category.
+```sql
+WITH item_counts AS (
+    SELECT category,
+           item_purchased,
+           COUNT(customer_id) AS total_orders,
+           ROW_NUMBER() OVER (PARTITION BY category ORDER BY COUNT(customer_id) DESC) AS item_rank
+    FROM customer
+    GROUP BY category, item_purchased
+)
+SELECT item_rank, category, item_purchased, total_orders
+FROM item_counts
+WHERE item_rank <= 3;
+```
+* **Result:**
+  * **Accessories:** Jewelry (171), Sunglasses (161), Belt (161)
+  * **Clothing:** Blouse (171), Pants (171), Shirt (169)
+  * **Footwear:** Sandals (160), Shoes (150), Sneakers (145)
+  * **Outerwear:** Jacket (163), Coat (161)
+
+---
+
+### 9. Repeat Buyers Subscription Opportunity
+* **Query:** Examines subscription adoption among frequent buyers (>5 previous purchases).
+```sql
+SELECT subscription_status,
+       COUNT(customer_id) AS repeat_buyers
+FROM customer
+WHERE previous_purchases > 5
+GROUP BY subscription_status;
+```
+* **Result:** Out of 3,476 repeat buyers, **2,518 (72.4%) are non-subscribers**, representing the prime target segment for subscription enrollment.
+
+---
+
+### 10. Revenue Contribution by Age Bracket
+* **Query:** Determines revenue breakdown across demographic age tiers.
+```sql
+SELECT age_group,
+       SUM(purchase_amount) AS total_revenue
+FROM customer
+GROUP BY age_group
+ORDER BY total_revenue DESC;
+```
+* **Result:** Young Adult (**$62,143**), Middle-aged (**$59,197**), Adult (**$55,978**), Senior (**$55,763**).
+
+---
+
 ## 🎯 Actionable Strategic Recommendations
 
 1. **Accelerate Loyalty-to-Subscription Conversion:**
