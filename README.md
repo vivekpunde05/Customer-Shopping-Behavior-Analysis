@@ -121,7 +121,6 @@ Customer Behavior Dashboard/
 ├── customer_shopping_behavior.ipynb        # Python data preparation, EDA & MySQL/PostgreSQL pipeline
 └── README.md                               # Project documentation & summary report
 ```
-
 ---
 
 ## 🚀 How to Run & Reproduce
