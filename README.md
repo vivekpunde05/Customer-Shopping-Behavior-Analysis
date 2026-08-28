@@ -174,7 +174,6 @@ Double-click `Customer Behavior Dashboard.pbix` in Power BI Desktop to interact 
 | `Payment Method` | String | Method used for payment (`Credit Card`, `Debit Card`, `PayPal`, `Venmo`, `Cash`, `Bank Transfer`) |
 | `Frequency of Purchases` | String | How often the customer shops (`Weekly`, `Fortnightly`, `Monthly`, `Quarterly`, `Annually`, etc.) |
 
-
 ---
 
 ## 👨‍💻 Author & Contributions
