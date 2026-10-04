@@ -168,7 +168,6 @@ Double-click `Customer Behavior Dashboard.pbix` in Power BI Desktop to interact 
 | `Review Rating` | Float | Customer product satisfaction rating (Scale: 1.0 – 5.0) |
 | `Subscription Status` | String | Indicates if customer has active membership (`Yes`, `No`) |
 | `Shipping Type` | String | Fulfillment method (`Standard`, `Express`, `2-Day Shipping`, `Next Day Air`, `Free Shipping`, `Store Pickup`) |
-
 | `Discount Applied` | String | Indicates if a price discount was applied (`Yes`, `No`) |
 | `Promo Code Used` | String | Indicates if promotional voucher was entered (`Yes`, `No`) |
 | `Previous Purchases` | Integer | Total count of previous orders made with the store (1 – 50) |
