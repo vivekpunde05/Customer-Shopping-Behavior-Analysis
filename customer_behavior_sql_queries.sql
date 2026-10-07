@@ -41,7 +41,6 @@ GROUP BY item_purchased
 ORDER BY discount_rate DESC
 LIMIT 5;
 
-
 --Q7. Segment customers into New, Returning, and Loyal based on their total 
 -- number of previous purchases, and show the count of each segment. 
 with customer_type as (
@@ -76,6 +75,7 @@ SELECT subscription_status,
 FROM customer
 WHERE previous_purchases > 5
 GROUP BY subscription_status;
+
 
 --Q10. What is the revenue contribution of each age group? 
 SELECT 
